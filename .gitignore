@@ -1,0 +1,8 @@
+# sistema
+.DS_Store
+
+# vercel (link local do projeto)
+.vercel
+
+# fontes pesadas não usadas pelo site (originais)
+Imagens galeria/
