@@ -79,6 +79,8 @@ body{
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  overscroll-behavior-x:none;          /* sem bounce lateral */
+  touch-action:pan-y pinch-zoom;       /* trava arrasto pro lado no mobile (mantém scroll vertical + zoom) */
   transition:background .45s var(--ease),color .45s var(--ease);
 }
 img{max-width:100%;display:block}
