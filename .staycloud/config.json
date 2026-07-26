@@ -1,0 +1,13 @@
+{
+  "apiUrl": "https://beta.staycloud.com",
+  "connectionId": "54d039b9-755d-4c90-b721-1c3d8f807498",
+  "projectId": "ef2400c9-0f46-4ead-b086-b42b24231b30",
+  "projectName": "iagen",
+  "scopes": [
+    "deploy:write",
+    "project:read",
+    "deploy:read",
+    "logs:read"
+  ],
+  "connectedAt": "2026-07-26T00:05:21.855Z"
+}

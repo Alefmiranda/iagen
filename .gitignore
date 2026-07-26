@@ -1,8 +1,14 @@
 # sistema
 .DS_Store
 
-# vercel (link local do projeto)
+# credenciais / config local
 .vercel
+.staycloud/credentials.json
 
-# fontes pesadas não usadas pelo site (originais)
+# staging de deploy
+.deploy/
+
+# fontes pesadas NÃO usadas pelo site (o site usa galeria/*.jpg otimizada)
 Imagens galeria/
+Mockup hero/
+copy-ia-gen-saas.html
