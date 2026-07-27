@@ -610,6 +610,7 @@ h1 em{
 
 /* saídas: estado de espera / geração */
 .node.out{opacity:0;transform:translateY(14px) scale(.96);pointer-events:none}
+@media (max-width:860px){#n-img3{display:none !important}}
 .node.out.shown{opacity:1;transform:none;pointer-events:auto}
 .node.out .thumb{position:relative}
 .node.out.load .thumb svg,.node.out.load .thumb img{opacity:0}
@@ -1312,6 +1313,19 @@ footer.ft{border-top:1px solid var(--line);padding:70px 0 36px;margin-top:110px}
             </div>
             <div class="node-body">
               <div class="thumb tall"><img src="hero-result.jpg" alt="Resultado gerado"></div>
+            </div>
+            <span class="port in"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 6 6"/></svg></span>
+            <span class="port out"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 6 6"/></svg></span>
+          </article>
+
+          <!-- SAÍDA 2 — segunda variação (só no desktop) -->
+          <article class="node out" id="n-img3" style="left:1000px;top:372px;width:220px">
+            <div class="node-head">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
+              Referência <b>img3</b>
+            </div>
+            <div class="node-body">
+              <div class="thumb tall"><img src="hero-result2.jpg" alt="Segunda variação gerada"></div>
             </div>
             <span class="port in"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 6 6"/></svg></span>
             <span class="port out"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 6 6"/></svg></span>
@@ -2586,8 +2600,9 @@ document.querySelectorAll('.rv').forEach((el,i) => {
   /* dois arranjos do mesmo fluxo: horizontal no desktop, empilhado no celular
      — [x, y, largura] por nó */
   const LAYOUTS = {
-    wide: { w:1300, h:700, nodes:{
-      'n-avatar':[95,34,210], 'n-img1':[95,372,210], 'n-gen':[520,206,300], 'n-img2':[940,150,250]
+    wide: { w:1330, h:700, nodes:{
+      'n-avatar':[95,34,210], 'n-img1':[95,372,210], 'n-gen':[540,206,300],
+      'n-img2':[1005,34,220], 'n-img3':[1005,372,220]
     }},
     tall: { w:620, h:1070, vertical:true, nodes:{
       'n-avatar':[18,16,282], 'n-img1':[320,16,282], 'n-gen':[66,452,486], 'n-img2':[169,652,282]
@@ -2614,6 +2629,7 @@ document.querySelectorAll('.rv').forEach((el,i) => {
     {from:'n-avatar', to:'n-gen',  stage:1},
     {from:'n-img1',   to:'n-gen',  stage:1},
     {from:'n-gen',    to:'n-img2', stage:2},
+    {from:'n-gen',    to:'n-img3', stage:2},
   ];
 
   /* cria dois paths por ligação: o cabo e a faísca que corre por ele */
@@ -2638,6 +2654,11 @@ document.querySelectorAll('.rv').forEach((el,i) => {
 
   function draw(){
     paths.forEach(p => {
+      // nó escondido (ex.: img3 no mobile) → não desenha o cabo
+      if (!$(p.from).offsetParent || !$(p.to).offsetParent){
+        p.wire.setAttribute('d',''); p.spark.setAttribute('d','');
+        return;
+      }
       const a = portPos(p.from, 'out');
       const b = portPos(p.to,   'in');
       let d;
@@ -2758,13 +2779,16 @@ document.querySelectorAll('.rv').forEach((el,i) => {
     play.querySelector('.tri').style.display = 'none';
     play.querySelector('.spin').style.display = 'block';
 
+    const hasImg3 = !!$('n-img3').offsetParent;   // visível só no desktop
     $('n-img2').classList.remove('shown','load');
+    if (hasImg3) $('n-img3').classList.remove('shown','load');
     await wait(280);
 
     spark(1);                                   // avatar + referência entram no nó
     await wait(560);
-    spark(2);                                   // nó gera o resultado
-    await reveal('n-img2', 240);
+    spark(2);                                   // nó gera o(s) resultado(s)
+    if (hasImg3) await Promise.all([reveal('n-img2', 240), reveal('n-img3', 430)]);
+    else         await reveal('n-img2', 240);
 
     play.classList.remove('busy');
     runAll.classList.remove('busy');
@@ -2785,6 +2809,7 @@ document.querySelectorAll('.rv').forEach((el,i) => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(max-width: 820px)').matches){
       render(PROMPT.length); pcar.style.display = 'none';
       $('n-img2').classList.add('shown');
+      if ($('n-img3').offsetParent) $('n-img3').classList.add('shown');
       return;
     }
     await wait(400);
@@ -2798,6 +2823,7 @@ document.querySelectorAll('.rv').forEach((el,i) => {
       pcar.style.display = 'inline-block';
       await untype();                                  // apaga o prompt
       $('n-img2').classList.remove('shown','load');    // some a foto
+      if ($('n-img3').offsetParent) $('n-img3').classList.remove('shown','load');
       await wait(650);
     }
   }
@@ -2809,6 +2835,7 @@ document.querySelectorAll('.rv').forEach((el,i) => {
   } else {
     render(PROMPT.length); pcar.style.display = 'none';
     $('n-img2').classList.add('shown');
+    if ($('n-img3').offsetParent) $('n-img3').classList.add('shown');
   }
 })();
 </script>
